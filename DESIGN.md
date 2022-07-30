@@ -15,3 +15,6 @@
 - Download files into a .csv from browser
     * Option to download multiple files separately or in a .zip
 
+# References
+
+https://github.com/Autodrop3d/serialTerminal.com
