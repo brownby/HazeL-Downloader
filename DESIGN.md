@@ -7,6 +7,8 @@
 
 `rm <filename>` - delete file permanently from SD card
 
+Will terminate the results of these commands with an EOT (end of transmission, 0x04) character on the Arduino side so that the JS side can determine the end of the command response
+
 # Functionality of website
 - Connect to serial port that HazeL is on
 - After connecting, display a list of all files on the SD card
@@ -18,3 +20,5 @@
 # References
 
 https://github.com/Autodrop3d/serialTerminal.com
+
+https://www.javatpoint.com/javascript-create-and-download-csv-file
