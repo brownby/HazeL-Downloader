@@ -10,12 +10,12 @@ document.getElementById('connect').onclick = async function() {
     console.log("Sending ls command");
     await sendSerialLine('ls');
 
-    // Begin listening to port
-    await listenToPort();
+    // Begin listening to port, wait for EOT character
+    await listenToPort('\x04');
 
     // console.log(serialResults);
-    // Remove last character
-    serialResults.slice(0, -1);
+    // Remove EOT character and final newline
+    serialResults = serialResults.slice(0, -2);
 
     // Create list of files
     fileList = serialResults.split('\n');

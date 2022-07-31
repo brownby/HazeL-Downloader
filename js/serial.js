@@ -22,20 +22,23 @@ async function connectSerial() {
 }
 
 // async function listenToPort(serialResults) {
-async function listenToPort() {
+async function listenToPort(endCharacter) {
     const textDecoder = new TextDecoderStream();
     const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
     const reader = textDecoder.readable.getReader();
+    let done = false;
 
     while (true) {
-        const { value, done } = await reader.read();
-        if (done || (serialResults[serialResults.length - 1] == '\x04')) {
+        if (serialResults[serialResults.length - 1] == endCharacter) {
             // Allow the serial port to be closed later.
             console.log('[readLoop] DONE');
             reader.releaseLock();
             connected = false;
             break;
         }
+
+        const { value, done } = await reader.read();
+
         // value is a string.
         serialResults += value;
         // console.log(serialResults);
