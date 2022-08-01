@@ -15,7 +15,20 @@
         <div class="container-fluid">
             <button id="connect">Connect</button>
             <button id="download">Download</button>
-            <table id="fileList" class="table" collapse></table>
+            <table id="fileList" class="table" style="visibility: hidden;">
+                <thead id="fileListHead" style="visibility: hidden;">
+                    <tr>
+                        <th>
+                            <input id="selectAll" name="selectAll" type="checkbox">
+                            <label for="selectAll">Select All</label>
+                        </th>
+                        <th>Time (UTC)</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody id="fileListBody" style="visibility: hidden;"></tbody>
+            </table>
             <a id="downloadAnchor" target="_blank" hidden></a>
         </div>
         <script src="js/main.js"></script>

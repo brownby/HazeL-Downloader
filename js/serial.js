@@ -1,4 +1,6 @@
-var port, textEncoder, writableStreamClosed, writer;
+var port
+var textEncoder, writableStreamClosed, writer;
+var textDecoder, readableStreamClosed, reader;
 var connected = false;
 var serialResults = "";
 
@@ -15,28 +17,24 @@ async function connectSerial() {
         writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
         writer = textEncoder.writable.getWriter();
 
+        textDecoder = new TextDecoderStream();
+        readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+        reader = textDecoder.readable.getReader();
+
         return true;
     } catch (e){
         alert("Serial Connection Failed" + e);
     }
 }
 
-// async function listenToPort(serialResults) {
+// Listen to data incoming on serial port, until endCharacter appears
 async function listenToPort(endCharacter) {
-    const textDecoder = new TextDecoderStream();
-    const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-    const reader = textDecoder.readable.getReader();
-    let done = false;
+    // textDecoder = new TextDecoderStream();
+    // readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+    // reader = textDecoder.readable.getReader();
+    serialResults = "";
 
-    while (true) {
-        if (serialResults[serialResults.length - 1] == endCharacter) {
-            // Allow the serial port to be closed later.
-            console.log('[readLoop] DONE');
-            reader.releaseLock();
-            connected = false;
-            break;
-        }
-
+    while (serialResults[serialResults.length - 1] != endCharacter) {
         const { value, done } = await reader.read();
 
         // value is a string.

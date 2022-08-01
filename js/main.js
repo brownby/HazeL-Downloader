@@ -1,5 +1,6 @@
 // Variable to store list of files from HazeL
 // var fileList = ['220730_212500_meta', '220730_212500_data', '220730_212100_meta', '220730_212100_data'];
+var fileList;
 
 document.getElementById('connect').onclick = async function() {
     // Connect serial port
@@ -23,13 +24,59 @@ document.getElementById('connect').onclick = async function() {
 
     // Populate table
     createFileList(fileList);
-}
-document.getElementById('download').onclick = downloadCsvFile;
+};
 
-var table = document.getElementById('fileList');
+document.getElementById('download').onclick = async function() {
+    // Get list of files to download (by checking checkboxes in table)
+    let filesToDownload = [];
+
+    // If select all is checked, upload all the files
+    if (document.getElementById('selectAll').checked == true) {
+        filesToDownload = fileList;
+    }
+    // Otherwise, construct filesToDownload based on checkboxes
+    else {
+        let tableBody = document.getElementById('fileListBody');
+        for (let i = 0, row; row = tableBody.rows[i]; i++) {
+            if (row.cells[0].firstChild.checked) {
+                let fileName = row.cells[0].firstChild.name;
+                filesToDownload.push(fileName);
+            }
+        }
+    }
+    console.log(filesToDownload);
+
+    if (filesToDownload.length > 0) {
+        let cmd = "dl ";
+
+        // Loop through filesToDownload and download each
+        for (let i = 0; i < filesToDownload.length; i++) {
+            cmd += filesToDownload[i];
+
+            // Send command to download current file
+            await sendSerialLine(cmd);
+
+            // Listen to port until EOT char
+            await listenToPort('\x04');
+
+            // Remove ETX and EOT characters
+            serialResults = serialResults.slice(0, -2);
+
+            // Download CSV
+            downloadCsvFile(serialResults, filesToDownload[i]);
+
+            cmd = "dl ";
+        }
+    }
+
+};
 
 // Turn list of file (files) into rows in an HTML table
 function createFileList(files) {
+    let table = document.getElementById('fileList');
+    let tableHead = document.getElementById('fileListHead');
+    let tableBody = document.getElementById('fileListBody');
+
     for (i in files) {
         let filenameArray = files[i].split('_');
 
@@ -44,21 +91,25 @@ function createFileList(files) {
         let type = filenameArray[2][0].toUpperCase() + filenameArray[2].substr(1);
 
         // Insert row at the end of the table
-        let row = table.insertRow(-1);
+        let row = tableBody.insertRow(-1);
 
         let cell1 = row.insertCell(0);
         let cell2 = row.insertCell(1);
         let cell3 = row.insertCell(2);
+        let cell4 = row.insertCell(3);
 
-        cell1.innerHTML = time;
-        cell2.innerHTML = date;
-        cell3.innerHTML = type;
+        let checkbox = document.createElement("INPUT");
+        checkbox.setAttribute("type", "checkbox");
+        checkbox.setAttribute("name", files[i]);
+
+        cell1.appendChild(checkbox);
+        cell2.innerHTML = time;
+        cell3.innerHTML = date;
+        cell4.innerHTML = type;
     }
+
+    // Make table visible
     table.style.visibility = 'visible';
-}
-
-function downloadData() {
-    // Send dl command along with files to download
-
-    // download CSV data from browser
+    tableHead.style.visibility = 'visible';
+    tableBody.style.visibility = 'visible';
 }

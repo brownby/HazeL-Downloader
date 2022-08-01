@@ -17,6 +17,16 @@ Will terminate the results of these commands with an EOT (end of transmission, 0
 - Download files into a .csv from browser
     * Option to download multiple files separately or in a .zip
 
+# TODOs
+- All the aesthetics
+- Make the select all checkbox actually select (and deselect when un-checked) all the boxes on the page
+- Delete file functionality
+- Option to zip, maybe?
+- Video
+- README and DESIGN documents
+- Clean up code
+- Host website and actually make it available
+
 # References
 
 https://github.com/Autodrop3d/serialTerminal.com
