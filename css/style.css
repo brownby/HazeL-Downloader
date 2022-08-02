@@ -1,0 +1,39 @@
+.thCheckbox {
+    width: 10%;
+}
+
+
+/* Speech bubble source: https://projects.verou.me/bubbly/ */
+.speech-bubble {
+	position: relative;
+	background: #12aef1;
+	border-radius: .4em;
+    /* width: 30%; */
+}
+
+.speech-bubble:after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 1.906em solid transparent;
+	border-left-color: #12aef1;
+	border-right: 0;
+	border-top: 0;
+	margin-top: -0.953em;
+	margin-right: -1.906em;
+}
+
+.talktext{
+    padding: 1em 1em;
+    line-height: 1.5em;
+    color: white;
+  }
+
+  .img-round {
+    max-width: 300px;
+    width: 100%;
+	clip-path: circle(30%);
+}

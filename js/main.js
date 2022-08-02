@@ -5,7 +5,14 @@ var fileList;
 document.getElementById('connect').onclick = async function() {
     // Connect serial port
     console.log("Connecting serial port");
-    await connectSerial();
+    let connected = await connectSerial();
+
+    if (connected) {
+        document.getElementById('download').disabled = false;
+    }
+    else {
+        return;
+    }
 
     // // Send command to get list of files
     console.log("Sending ls command");
@@ -93,16 +100,24 @@ function createFileList(files) {
         // Insert row at the end of the table
         let row = tableBody.insertRow(-1);
 
-        let cell1 = row.insertCell(0);
-        let cell2 = row.insertCell(1);
-        let cell3 = row.insertCell(2);
-        let cell4 = row.insertCell(3);
-
         let checkbox = document.createElement("INPUT");
         checkbox.setAttribute("type", "checkbox");
         checkbox.setAttribute("name", files[i]);
 
-        cell1.appendChild(checkbox);
+        let checkboxTh = document.createElement("TH");
+        checkboxTh.setAttribute("scope", "row");
+        checkboxTh.setAttribute("class", "thCheckbox");
+        checkboxTh.appendChild(checkbox);
+
+        // cell1.appendChild(checkboxTh);
+        row.appendChild(checkboxTh);
+
+        // let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+        let cell4 = row.insertCell(3);
+
+
         cell2.innerHTML = time;
         cell3.innerHTML = date;
         cell4.innerHTML = type;

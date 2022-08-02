@@ -23,7 +23,8 @@ async function connectSerial() {
 
         return true;
     } catch (e){
-        alert("Serial Connection Failed" + e);
+        alert("Serial Connection Failed: " + e);
+        return false;
     }
 }
 

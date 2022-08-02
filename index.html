@@ -12,23 +12,40 @@
         <title>HazeL Data Downloader</title>
     </head>
     <body>
-        <div class="container-fluid">
-            <button id="connect">Connect</button>
-            <button id="download">Download</button>
-            <table id="fileList" class="table" style="visibility: hidden;">
-                <thead id="fileListHead" style="visibility: hidden;">
-                    <tr>
-                        <th>
-                            <input id="selectAll" name="selectAll" type="checkbox">
-                            <label for="selectAll">Select All</label>
-                        </th>
-                        <th>Time (UTC)</th>
-                        <th>Date</th>
-                        <th>Type</th>
-                    </tr>
-                </thead>
-                <tbody id="fileListBody" style="visibility: hidden;"></tbody>
-            </table>
+        <div class="container pt-3">
+            <div class="row text-center justify-content-center">
+                <div class="col">
+                    <button id="connect" class="btn btn-primary" type="button">Connect</button>
+                    <button id="download" class="btn btn-primary" type="button" disabled>Download</button>
+                </div>
+                <div class="col-md-auto my-auto text-center">
+                    <ol class="speech-bubble">
+                        <div class="talktext">
+                            <li>Plug your HazeL into your computer</li>
+                            <li>Click the "Connect" button above</li>
+                        </div>
+                    </ol>
+                </div>
+                <div class="col-md-auto">
+                    <img src="img/hazel1.jpg" class="img-round"></img>
+                </div>
+            </div>
+            <div class="row text-center">
+                <table id="fileList" class="table table-striped table-sm " style="visibility: hidden;">
+                    <thead id="fileListHead" style="visibility: hidden;">
+                        <tr>
+                            <th scope="col">
+                                <input id="selectAll" name="selectAll" type="checkbox">
+                                <label for="selectAll">Select All</label>
+                            </th>
+                            <th scope="col">Time (UTC)</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Type</th>
+                        </tr>
+                    </thead>
+                    <tbody id="fileListBody" class="table-group-divider" style="visibility: hidden;"></tbody>
+                </table>
+            </div>
             <a id="downloadAnchor" target="_blank" hidden></a>
         </div>
         <script src="js/main.js"></script>
