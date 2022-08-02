@@ -19,13 +19,12 @@ Will terminate the results of these commands with an EOT (end of transmission, 0
 
 # TODOs
 - All the aesthetics
-- Make the select all checkbox actually select (and deselect when un-checked) all the boxes on the page
-- Delete file functionality
-- Option to zip, maybe?
+- Delete file functionality - optional
 - Video
 - README and DESIGN documents
 - Clean up code
-- Host website and actually make it available
+- Add error checking
+-   Timeout for commands!!
 
 # References
 

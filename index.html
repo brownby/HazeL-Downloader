@@ -13,25 +13,40 @@
     </head>
     <body>
         <div class="container pt-3">
-            <div class="row text-center justify-content-center">
+            <div class="row text-center border-bottom border-dark">
                 <div class="col">
+                    <h1 class="fs-1">
+                        <a href="https://github.com/brownby/HazeL/blob/hazel-3.0/README.md" target="_blank">
+                            <img src="img/hazel_logo.png" class="img-sm" alt="HazeL logo" title="Click to learn more about HazeL!">
+                        </a>
+                        Data Downloader
+                    </h1>
+                    <h2>
+                        <a href="https://github.com/brownby/HazeL/blob/hazel-3.0/README.md" class="fs-4" target="_blank">What is HazeL?</a>
+                    </h2>
+                </div>
+            </div>
+            <div class="row text-center justify-content-center pt-3" style="--bs-border-opacity: 0;">
+                <div class="col my-auto">
                     <button id="connect" class="btn btn-primary" type="button">Connect</button>
                     <button id="download" class="btn btn-primary" type="button" disabled>Download</button>
                 </div>
-                <div class="col-md-auto my-auto text-center">
+                <div class="col-md-4 bottom text-center">
                     <ol class="speech-bubble">
-                        <div class="talktext">
-                            <li>Plug your HazeL into your computer</li>
-                            <li>Click the "Connect" button above</li>
+                        <div id="directions" class="talktext text-wrap">
+                            <li id="step1">Plug your HazeL into your computer</li>
+                            <li id="step2">Click the "Connect" button</li>
                         </div>
                     </ol>
                 </div>
                 <div class="col-md-auto">
-                    <img src="img/hazel1.jpg" class="img-round"></img>
+                    <img id="hazelPic" src="img/hazel1.jpg" class="rounded-5 img-cropped">
                 </div>
             </div>
             <div class="row text-center">
-                <table id="fileList" class="table table-striped table-sm " style="visibility: hidden;">
+                <table id="fileList" class="table table-striped table-sm caption-top table-hover" style="visibility: hidden;">
+                    <caption class="text-center fs-2 fw-bold titleText">File List</caption>
+                    <caption class="text-center fs-5 titleText">Select the file(s) you would like to download</caption>
                     <thead id="fileListHead" style="visibility: hidden;">
                         <tr>
                             <th scope="col">
@@ -45,6 +60,11 @@
                     </thead>
                     <tbody id="fileListBody" class="table-group-divider" style="visibility: hidden;"></tbody>
                 </table>
+            </div>
+            <div class="row">
+                <footer class="py-3 my-4>">
+                    <p class="text-center text-muted">© 2022 Benjamin Y. Brown</p>
+                </footer>
             </div>
             <a id="downloadAnchor" target="_blank" hidden></a>
         </div>
