@@ -16,8 +16,6 @@ async function connectSerial() {
         let textDecoder = new TextDecoderStream();
         let readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
         reader = textDecoder.readable.getReader();
-
-        return true;
     } catch (e){
         // Throw exception up to main.js to display error appropriately
         throw e;
@@ -30,7 +28,14 @@ async function listenToPort(endCharacter) {
     let serialResults = "";
     let timeout = 5000;
 
+    let start_time = Date.now();
+
     while (serialResults[serialResults.length - 1] != endCharacter) {
+        if (Date.now() - start_time > timeout) {
+            // Read timed out
+            return false;
+        }
+
         try {
             // Attempt to read data from serial port, with 5 second time out
             let data = await fulfillWithTimeLimit(timeout, reader.read(), false);

@@ -10,7 +10,7 @@ document.getElementById('connect').onclick = async function() {
             // Error gets thrown when user cancels, just let this be so user can close pop-up without issue
         }
         else if (e.message == "Failed to open serial port.") {
-            hazelError("ERROR: Serial port failed to open. It may be open in other software (such as the Arduino IDE), or you may have selected the wrong port. Refresh and try again, or try unplugging your HazeL and plugging it back in.");
+            hazelError("Serial port failed to open! It may be open in other software (such as the Arduino IDE), or you may have selected the wrong port. Refresh and try again, or try unplugging your HazeL and plugging it back in.");
         }
         else {
             hazelError("Serial Connection Failed: " + e.message);
@@ -85,7 +85,9 @@ document.getElementById('connect').onclick = async function() {
         step2.innerHTML = "Click the \"Download\" button";
     }
 
-    document.getElementById('step3').remove();
+    if (document.getElementById('step3') !== null) {
+        document.getElementById('step3').remove();
+    }
 };
 
 document.getElementById('download').onclick = async function() {
@@ -94,30 +96,18 @@ document.getElementById('download').onclick = async function() {
         hazelError("Connect to a serial port before attempting to download!");
     }
 
-    // Get list of files to download (by checking checkboxes in table)
-    let filesToDownload = [];
+    // Start of download command
+    let cmd = "dl ";
 
-    // If select all is checked, upload all the files
-    if (document.getElementById('selectAll').checked == true) {
-        filesToDownload = fileList;
-    }
-    // Otherwise, construct filesToDownload based on checkboxes
-    else {
-        let tableBody = document.getElementById('fileListBody');
-        for (let i = 0, row; row = tableBody.rows[i]; i++) {
-            if (row.cells[0].firstChild.checked) {
-                let fileName = row.cells[0].firstChild.name;
-                filesToDownload.push(fileName);
-            }
-        }
-    }
+    // Download files based on if checkbox is clicked or not
+    let tableBody = document.getElementById('fileListBody');
+    for (let i = 0, row; row = tableBody.rows[i]; i++) {
+        if (row.cells[0].firstChild.checked) {
+            // Store file name
+            let fileName = row.cells[0].firstChild.name;
 
-    if (filesToDownload.length > 0) {
-        let cmd = "dl ";
-
-        // Loop through filesToDownload and download each
-        for (let i = 0; i < filesToDownload.length; i++) {
-            cmd += filesToDownload[i];
+            // Add fileName to command
+            cmd += fileName;
 
             // Send command to download current file
             await sendSerialLine(cmd);
@@ -129,12 +119,12 @@ document.getElementById('download').onclick = async function() {
             serialResults = serialResults.slice(0, -2);
 
             // Download CSV
-            downloadCsvFile(serialResults, filesToDownload[i]);
+            downloadCsvFile(serialResults, fileName);
 
+            // Reset command
             cmd = "dl ";
         }
     }
-
 };
 
 // Select all will check and uncheck boxes
