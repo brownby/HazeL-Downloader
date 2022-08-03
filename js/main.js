@@ -1,10 +1,11 @@
+// Main script for Hazel Data Downloader - see README.md and DESIGN.md for details
+
 document.getElementById('connect').onclick = async function() {
     // Connect serial port
     try {
         await connectSerial();
     }
     catch (e) {
-        console.log(e.message);
         if (e.message == "No port selected by the user.") {
             // Error gets thrown when user cancels, just let this be so user can close pop-up without issue
         }
@@ -19,7 +20,6 @@ document.getElementById('connect').onclick = async function() {
     }
 
     // Send command to get list of files
-    console.log("Sending ls command");
     await sendSerialLine('ls');
 
     // Begin listening to port, wait for EOT character
@@ -52,7 +52,9 @@ document.getElementById('connect').onclick = async function() {
     document.getElementById('hazelPic').src= "img/hazel2.jpg";
 
     // Remove error message if present
-    document.getElementById('error').remove();
+    if (document.getElementById('error') !== null) {
+        document.getElementById('error').remove();
+    }
 
     // Change instructions in speech bubble, and add message that connection was successful
     instructions = document.getElementById('instructions');
