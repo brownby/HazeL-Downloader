@@ -18,13 +18,10 @@ Will terminate the results of these commands with an EOT (end of transmission, 0
     * Option to download multiple files separately or in a .zip
 
 # TODOs
-- All the aesthetics
-- Delete file functionality - optional
 - Video
 - README and DESIGN documents
 - Clean up code
 - Add error checking
--   Timeout for commands!!
 
 # References
 

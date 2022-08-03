@@ -1,14 +1,15 @@
- //create a user-defined function to download CSV file (from browser to user's machine)
+// Function for downloading a CSV into a file called filename
  function downloadCsvFile(csvFileData, fileName) {
 
-     //define the heading for each row of the data
-     let csvContent = 'data:text/csv;charset=utf-8,';
+    // CSV header content
+    let csvContent = 'data:text/csv;charset=utf-8,';
 
-     csvContent += csvFileData;
+    // HazeL data and metadata files already have column headers, no need to add them
+    csvContent += csvFileData;
 
-     // Download
-     let anchor = document.getElementById('downloadAnchor')
-     anchor.href = encodeURI(csvContent);
-     anchor.download = fileName;
-     anchor.click();
+    // Download the file
+    let anchor = document.getElementById('downloadAnchor')
+    anchor.href = encodeURI(csvContent);
+    anchor.download = fileName;
+    anchor.click();
  }

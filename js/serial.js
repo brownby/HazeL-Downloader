@@ -1,8 +1,4 @@
-var port
-var textEncoder, writableStreamClosed, writer;
-var textDecoder, readableStreamClosed, reader;
-var connected = false;
-var serialResults = "";
+var port, writer, reader;
 
 async function connectSerial() {
     try {
@@ -13,39 +9,72 @@ async function connectSerial() {
         let settings = {dataTerminalReady: true, requestToSend: true};
         await port.setSignals(settings);
 
-        textEncoder = new TextEncoderStream();
-        writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
+        let textEncoder = new TextEncoderStream();
+        let writableStreamClosed = textEncoder.readable.pipeTo(port.writable);
         writer = textEncoder.writable.getWriter();
 
-        textDecoder = new TextDecoderStream();
-        readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
+        let textDecoder = new TextDecoderStream();
+        let readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
         reader = textDecoder.readable.getReader();
 
         return true;
     } catch (e){
-        alert("Serial Connection Failed: " + e);
-        return false;
+        // Throw exception up to main.js to display error appropriately
+        throw e;
     }
 }
 
 // Listen to data incoming on serial port, until endCharacter appears
 async function listenToPort(endCharacter) {
-    // textDecoder = new TextDecoderStream();
-    // readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-    // reader = textDecoder.readable.getReader();
-    serialResults = "";
+
+    let serialResults = "";
+    let timeout = 5000;
 
     while (serialResults[serialResults.length - 1] != endCharacter) {
-        const { value, done } = await reader.read();
+        try {
+            // Attempt to read data from serial port, with 5 second time out
+            let data = await fulfillWithTimeLimit(timeout, reader.read(), false);
+            if (!data) {
+                // Read timed out
+                return false;
+            }
 
-        // value is a string.
-        serialResults += value;
-        // console.log(serialResults);
+            // If read didn't timeout, read the data and append to results string
+            const { value, done } = data;
+            serialResults += value;
+        }
+        catch (e) {
+            alert("Serial Read Failed: " + e.message);
+        }
     }
-    console.log(serialResults);
+
+    // Once endCharacter found, return results string
+    return serialResults;
 }
 
 async function sendSerialLine(dataToSend) {
     dataToSend += '\n';
-    await writer.write(dataToSend)
+
+    try {
+        await writer.write(dataToSend)
+    }
+    catch (e) {
+        alert("Serial Write Failed: " + e.message);
+    }
+}
+
+// Source: https://medium.com/swlh/set-a-time-limit-on-async-actions-in-javascript-567d7ca018c2
+// Using this function to timeout my serial reads for error checking
+async function fulfillWithTimeLimit(timeLimit, task, failureValue){
+    let timeout;
+    const timeoutPromise = new Promise((resolve, reject) => {
+        timeout = setTimeout(() => {
+            resolve(failureValue);
+        }, timeLimit);
+    });
+    const response = await Promise.race([task, timeoutPromise]);
+    if(timeout){ //the code works without this but let's be safe and clean up the timeout
+        clearTimeout(timeout);
+    }
+    return response;
 }

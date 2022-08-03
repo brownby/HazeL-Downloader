@@ -1,35 +1,49 @@
-// Variable to store list of files from HazeL
-var fileList;
-
 document.getElementById('connect').onclick = async function() {
     // Connect serial port
-    console.log("Connecting serial port");
-    let connected = await connectSerial();
-
-    if (connected) {
-        document.getElementById('download').disabled = false;
-        this.disabled = true;
+    try {
+        await connectSerial();
     }
-    else {
-        // Change HazeL image and add error message to speech bubble maybe?
-
+    catch (e) {
+        console.log(e.message);
+        if (e.message == "No port selected by the user.") {
+            // Error gets thrown when user cancels, just let this be so user can close pop-up without issue
+        }
+        else if (e.message == "Failed to open serial port.") {
+            hazelError("ERROR: Serial port failed to open. It may be open in other software (such as the Arduino IDE), or you may have selected the wrong port. Refresh and try again, or try unplugging your HazeL and plugging it back in.");
+        }
+        else {
+            hazelError("Serial Connection Failed: " + e.message);
+        }
+        // Regardless of message, stop execution
         return;
     }
 
-    // // Send command to get list of files
+    // Send command to get list of files
     console.log("Sending ls command");
     await sendSerialLine('ls');
 
     // Begin listening to port, wait for EOT character
-    await listenToPort('\x04');
+    let serialResults = await listenToPort('\x04');
 
-    // console.log(serialResults);
+    if (!serialResults) {
+        // Serial read timed out, likely because user accidentally connected to a device that is not a HazeL, so it didn't respond to commands
+        hazelError("Serial read timed out, try refreshing and make sure to select the correct serial port!");
+        return;
+    }
+    else if (serialResults.length == 0) {
+        hazelError("No files found! Double check your SD card or try refreshing the page");
+        return;
+    }
+
+    // Disable connect button and enable download button
+    this.disabled = true;
+    document.getElementById('download').disabled = false;
+
     // Remove EOT character and final newline
     serialResults = serialResults.slice(0, -2);
 
     // Create list of files
-    fileList = serialResults.split('\n');
-    console.log(fileList);
+    let fileList = serialResults.split('\n');
 
     // Populate table
     createFileList(fileList);
@@ -37,27 +51,47 @@ document.getElementById('connect').onclick = async function() {
     // Change Hazel image
     document.getElementById('hazelPic').src= "img/hazel2.jpg";
 
-    // Change directions, and add message that connection was successful
-    directions = document.getElementById('directions');
+    // Remove error message if present
+    document.getElementById('error').remove();
+
+    // Change instructions in speech bubble, and add message that connection was successful
+    instructions = document.getElementById('instructions');
     msg = document.createElement('P');
     msg.innerHTML = "You're connected! Now:";
-    directions.prepend(msg);
+    instructions.prepend(msg);
 
+    // The steps might have been removed by error messages, make sure to add them back
     step1 = document.getElementById('step1');
-    step1.innerHTML = "Select all the files you would like to download";
+    if (step1 === null) {
+        step1 = document.createElement('LI');
+        step1.id = 'step1';
+        step1.innerHTML = "Select all the files you would like to download";
+        instructions.appendChild(step1);
+    }
+    else {
+        step1.innerHTML = "Select all the files you would like to download";
+    }
 
     step2 = document.getElementById('step2');
-    step2.innerHTML = "Click the \"Download\" button";
+    if (step2 === null) {
+        step2 = document.createElement('LI');
+        step2.id = 'step2';
+        step2.innerHTML = "Click the \"Download\" button";
+        instructions.appendChild(step2);
+    }
+    else {
+        step2.innerHTML = "Click the \"Download\" button";
+    }
 
-    lineBreak = document.createElement('BR');
-    directions.appendChild(lineBreak);
-
-    msg = document.createElement('P');
-    msg.innerHTML = "If the file list is empty (and you're sure you have files on your SD card), try refreshing and connecting again (leave your HazeL plugged in!)";
-    directions.appendChild(msg);
+    document.getElementById('step3').remove();
 };
 
 document.getElementById('download').onclick = async function() {
+    // Verify port is connected
+    if (!port) {
+        hazelError("Connect to a serial port before attempting to download!");
+    }
+
     // Get list of files to download (by checking checkboxes in table)
     let filesToDownload = [];
 
@@ -75,7 +109,6 @@ document.getElementById('download').onclick = async function() {
             }
         }
     }
-    console.log(filesToDownload);
 
     if (filesToDownload.length > 0) {
         let cmd = "dl ";
@@ -88,7 +121,7 @@ document.getElementById('download').onclick = async function() {
             await sendSerialLine(cmd);
 
             // Listen to port until EOT char
-            await listenToPort('\x04');
+            let serialResults = await listenToPort('\x04');
 
             // Remove ETX and EOT characters
             serialResults = serialResults.slice(0, -2);
@@ -117,6 +150,11 @@ document.getElementById('selectAll').onclick = function() {
 
 // Turn list of file (files) into rows in an HTML table
 function createFileList(files) {
+    // Don't create table if there are no files
+    if (files.length == 0) {
+        return;
+    }
+
     let table = document.getElementById('fileList');
     let tableHead = document.getElementById('fileListHead');
     let tableBody = document.getElementById('fileListBody');
@@ -174,4 +212,20 @@ function createFileList(files) {
     table.style.visibility = 'visible';
     tableHead.style.visibility = 'visible';
     tableBody.style.visibility = 'visible';
+}
+
+// Show Hazel error pic, with error message in speech bubble
+function hazelError(message) {
+    // Change to error pic
+    document.getElementById('hazelPic').src= "img/hazel3.jpg";
+
+    // Remove all HTML in speech bubble
+    instructions = document.getElementById('instructions');
+    instructions.replaceChildren();
+
+    // Add message
+    msg = document.createElement('P');
+    msg.innerHTML = message;
+    msg.id = 'error';
+    instructions.appendChild(msg);
 }
