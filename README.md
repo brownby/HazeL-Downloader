@@ -1,6 +1,6 @@
 # HazeL Data Downloader - [hazeldownload.com](https://hazeldownload.com/)
 
-The HazeL Data Downloader is a software tool to accompany the [HazeL](https://github.com/brownby/HazeL/tree/hazel-3.0) particulate matter sensor.
+The [HazeL Data Downloader](https://youtu.be/6sp-O-6ZM_A) is a software tool to accompany the [HazeL](https://github.com/brownby/HazeL/tree/hazel-3.0) particulate matter sensor.
 
 ## Brief Background on HazeL
 

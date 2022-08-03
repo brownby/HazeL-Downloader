@@ -1,9 +1,10 @@
 # Motivation for HazeL Data Downloader
-The most consistent pain point for students when using HazeL is getting data off of their device. HazeL stores data and metadata text files on an SD card that is embedded inside of the device and difficult to access. The solution for the past two years has been [scripts](https://github.com/brownby/HazeL/tree/hazel-3.0/scripts) that students download and run on their machines. While these technically work, they produce a multitude of headaches, most notably:
+The most consistent pain point for students when using HazeL is getting data off of their device. Every time a user begins a round of data collection HazeL creates two timestamped files, one for data and one for metadata. These files are stored on an SD card that is embedded inside of the device and difficult to access. The solution for the past two years has been [scripts](https://github.com/brownby/HazeL/tree/hazel-3.0/scripts) that students download and run on their machines. While these technically work, they produce a multitude of headaches, most notably:
 
 1. They are not cross platform. Students with a Windows machine run a PowerShell script, and students with a Mac or Linux machine run a Bash script.
 2. Windows permissions issues. Windows machines often disable running PowerShell scripts by default, and sometimes make it hard to download them to begin with.
 3. On Mac, students have to navigate a terminal, often for the first time, and use unfamiliar commands like `chmod`.
+4. On both platforms, finding serial ports automatically can be an issue. If a student's machine has multiple available serial ports, there is not an easy way to detect which one is their HazeL, and the scripts will produce errors that can only be resolved by the students manually editing them.
 
 For months now, since I discovered the [Web Serial API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Serial_API), I've had the idea to create a webpage that will handle this process. No more downloading anything, no more annoying scripts, I just point students to an easy to use website that will talk to their HazeL and grab the data from it. Now it exists!
 
