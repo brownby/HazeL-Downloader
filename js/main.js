@@ -176,6 +176,9 @@ function createFileList(files) {
         let checkbox = document.createElement("INPUT");
         checkbox.setAttribute("type", "checkbox");
         checkbox.setAttribute("name", files[i]);
+        checkbox.onclick = function() {
+            checkbox.checked = !checkbox.checked;
+        }
 
         let checkboxTh = document.createElement("TH");
         checkboxTh.setAttribute("scope", "row");
