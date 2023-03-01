@@ -154,6 +154,15 @@ function createFileList(files) {
     for (i in files) {
         let filenameArray = files[i].split('_');
 
+        console.log(`Testing: ${files[i]}`)
+        // ignore file names that don't match convention
+        if (!checkFilename(filenameArray)) {
+            console.log('failed');
+            continue;
+        }
+        console.log('passed');
+
+
         let year = '20' + filenameArray[0].substr(0, 2);
         let month = filenameArray[0].substr(2, 2).replace(/^0+/, '');
         let day = filenameArray[0].substr(4, 2).replace(/^0+/, '')
@@ -223,4 +232,33 @@ function hazelError(message) {
     msg.innerHTML = message;
     msg.id = 'error';
     instructions.appendChild(msg);
+}
+
+function checkFilename(filenameArray) {
+    if (filenameArray.length != 3) {
+        return false;
+    }
+    if (filenameArray[0].length != 6) {
+        return false;
+    }
+    if (filenameArray[1].length != 6) {
+        return false;
+    }
+    if (filenameArray[2].length != 4) {
+        return false;
+    }
+    // Test date (this is not extremely robust)
+    if (!(/^2[0-9]{1}(0|1)[0-9]{1}[0-3]{1}[0-9]{1}/.test(filenameArray[0]))) {
+        return false;
+    }
+    // Test time (nor is this)
+    if (!(/^[0-2]{1}[0-3]{1}[0-5]{1}[0-9]{1}[0-5]{1}[0-9]{1}/.test(filenameArray[1]))) {
+        return false;
+    }
+    // Test type
+    if (!(/(data|meta)/.test(filenameArray[2]))) {
+        return false;
+    }
+
+    return true;
 }
