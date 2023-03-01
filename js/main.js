@@ -154,13 +154,13 @@ function createFileList(files) {
     for (i in files) {
         let filenameArray = files[i].split('_');
 
-        console.log(`Testing: ${files[i]}`)
-        // ignore file names that don't match convention
-        if (!checkFilename(filenameArray)) {
-            console.log('failed');
-            continue;
-        }
-        console.log('passed');
+        // console.log(`Testing: ${files[i]}`)
+        // // ignore file names that don't match convention
+        // if (!checkFilename(filenameArray)) {
+        //     console.log('failed');
+        //     continue;
+        // }
+        // console.log('passed');
 
 
         let year = '20' + filenameArray[0].substr(0, 2);
