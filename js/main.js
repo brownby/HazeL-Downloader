@@ -23,7 +23,7 @@ document.getElementById('connect').onclick = async function() {
     await sendSerialLine('ls');
 
     // Begin listening to port, wait for EOT character
-    let serialResults = await listenToPort('\x04');
+    let serialResults = await listenToPort('\x04', 5000);
 
     if (!serialResults) {
         // Serial read timed out, likely because user accidentally connected to a device that is not a HazeL, so it didn't respond to commands
@@ -113,7 +113,17 @@ document.getElementById('download').onclick = async function() {
             await sendSerialLine(cmd);
 
             // Listen to port until EOT char
-            let serialResults = await listenToPort('\x04');
+            let serialResults = await listenToPort('\x04', 180000);
+
+            if (!serialResults) {
+                // Serial read timed out, likely because file is VERY big
+                hazelError("Serial read timed out! Contact brown@g.harvard.edu");
+                return;
+            }
+            else if (serialResults.length == 0) {
+                hazelError("Empty file! Try downloading another");
+                return;
+            }
 
             // Remove ETX and EOT characters
             serialResults = serialResults.slice(0, -2);

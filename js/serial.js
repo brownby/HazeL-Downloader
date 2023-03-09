@@ -23,10 +23,9 @@ async function connectSerial() {
 }
 
 // Listen to data incoming on serial port, until endCharacter appears
-async function listenToPort(endCharacter) {
+async function listenToPort(endCharacter, timeout) {
 
     let serialResults = "";
-    let timeout = 5000;
 
     let start_time = Date.now();
 
@@ -47,6 +46,7 @@ async function listenToPort(endCharacter) {
             // If read didn't timeout, read the data and append to results string
             const { value, done } = data;
             serialResults += value;
+            // console.log(serialResults);
         }
         catch (e) {
             alert("Serial Read Failed: " + e.message);
